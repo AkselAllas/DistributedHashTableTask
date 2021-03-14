@@ -7,7 +7,18 @@ import {
 } from './dockerHelperFunctions.mjs';
 
 import { helpReadme } from './cliHelperFunctions.mjs';
-import { sendNodePostRequest } from './nodeHelperFunctions.mjs';
+import { getNode, sendNodePostRequest } from './nodeHelperFunctions.mjs';
+
+const createCLI = () => {
+  const local = repl.start('node::local> ');
+  local.context.setNode = sendNodePostRequest;
+  local.context.stopDocker = stopAndRemoveAllDHTDockerContainers;
+  local.context.help = helpReadme;
+  local.context.getNode = getNode;
+  setTimeout(() => {
+    console.log("Type 'help()' for list of available commands");
+  }, 1500);
+};
 
 const main = async () => {
   const properties = await readPropertiesFromFile(process.argv[2]);
@@ -29,13 +40,8 @@ const main = async () => {
       }
     );
   });
-  const local = repl.start('node::local> ');
-  local.context.setNode = sendNodePostRequest;
-  local.context.stopDocker = stopAndRemoveAllDHTDockerContainers;
-  local.context.help = helpReadme;
-  setTimeout(() => {
-    console.log("Type 'help()' for list of available commands");
-  }, 1500);
+
+  createCLI();
 };
 
 try {

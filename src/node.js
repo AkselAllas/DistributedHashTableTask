@@ -43,9 +43,11 @@ const server = http.createServer((req, res) => {
   res.setHeader('Content-Type', 'text/plain');
   if (req.url === '/' && req.method === 'GET') {
     res.end(
-      `${JSON.stringify(node)} ${JSON.stringify(shortcuts)} ${JSON.stringify(
-        keySpace
-      )} ${JSON.stringify(successors)} ${JSON.stringify(validKeys)}`
+      `node: ${JSON.stringify(node)} shorcuts: ${JSON.stringify(
+        shortcuts
+      )} keySpace: ${JSON.stringify(keySpace)} ${JSON.stringify(
+        successors
+      )} validKeys: ${JSON.stringify(validKeys)}`
     );
   }
   if (req.method === 'POST') {
@@ -54,8 +56,6 @@ const server = http.createServer((req, res) => {
       body += data;
     });
     req.on('end', () => {
-      console.log(`Body: ${body}`);
-      console.log(typeof body);
       setNodeValues(body);
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end('200');
@@ -68,6 +68,5 @@ server.listen(port, hostname, () => {
 });
 
 setTimeout(() => {
-  console.log('SENT SHIT');
   sendNodePostRequest('12 [34] [1,100] {successor:21,nextSuccessor:43}');
 }, 5000);

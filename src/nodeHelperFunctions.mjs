@@ -7,3 +7,9 @@ export const sendNodePostRequest = (stringBody) => {
   const node = splitters[0];
   requestify.post(`http://172.13.37.${node}:3000/`, stringBody);
 };
+
+export const getNode = (node) => {
+  requestify.get(`http://172.13.37.${node}:3000/`).then((response) => {
+    console.log(response.getBody());
+  });
+};
