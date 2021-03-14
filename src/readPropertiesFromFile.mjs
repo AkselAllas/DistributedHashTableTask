@@ -9,10 +9,17 @@ const groupShortcutsByNodes = (properties) => {
   });
   properties.shortcuts.forEach((shortcut) => {
     const [node, shortcutValue] = shortcut.split(':');
-    shortcutNodeDict[node].push(shortcutValue);
+    shortcutNodeDict[node].push(parseInt(shortcutValue, 10));
   });
 
   return shortcutNodeDict;
+};
+
+const splitAndParseToNumbers = (line, nextLine) => {
+  const splitLine = line.replace(/\s/g, '').split(',');
+  return nextLine === 'shortcuts'
+    ? splitLine
+    : splitLine.map((x) => parseInt(x, 10));
 };
 
 const readPropertiesFromFile = async (path) => {
@@ -24,7 +31,7 @@ const readPropertiesFromFile = async (path) => {
   const promisedEachLine = Promise.promisify(lineReader.eachLine);
   await promisedEachLine(path, (line) => {
     if (nextLine !== '') {
-      properties[nextLine] = line.replace(/\s/g, '').split(',');
+      properties[nextLine] = splitAndParseToNumbers(line, nextLine);
       nextLine = '';
     }
     if (line.includes('#key-space')) {

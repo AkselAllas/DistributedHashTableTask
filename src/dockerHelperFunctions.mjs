@@ -1,8 +1,12 @@
 import { exec } from 'child_process';
 
-export const createDockerContainer = (node) =>
+export const createDockerContainer = (node, shortcuts, keySpace, successors) =>
   exec(
-    `docker run --network dht --ip 172.13.37.${node} --name dht-${node} -dit dht`,
+    `docker run --network dht --ip 172.13.37.${node} --name dht-${node} -dit dht /usr/local/bin/node /app/src/node.js ${JSON.stringify(
+      node
+    )} ${JSON.stringify(shortcuts)} ${JSON.stringify(
+      keySpace
+    )} ${JSON.stringify(successors)}`,
     (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`);
