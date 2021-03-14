@@ -7,4 +7,5 @@ export const helpReadme = () => {
   );
   console.log('\x1b[32m', 'stopDocker()');
   console.log('\x1b[32m', 'getNode(5)');
+  console.log('\x1b[32m', 'list()');
 };

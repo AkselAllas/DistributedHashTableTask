@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable import/no-mutable-exports */
 import repl from 'repl';
 import readPropertiesFromFile from './readPropertiesFromFile.mjs';
 import {
@@ -7,7 +8,12 @@ import {
 } from './dockerHelperFunctions.mjs';
 
 import { helpReadme } from './cliHelperFunctions.mjs';
-import { getNode, sendNodePostRequest } from './nodeHelperFunctions.mjs';
+import { list, getNode, sendNodePostRequest } from './nodeHelperFunctions.mjs';
+
+// eslint-disable-next-line no-var
+export var firstNode = [];
+// eslint-disable-next-line no-var
+export var keySpace = [];
 
 const createCLI = () => {
   const local = repl.start('node::local> ');
@@ -15,6 +21,7 @@ const createCLI = () => {
   local.context.stopDocker = stopAndRemoveAllDHTDockerContainers;
   local.context.help = helpReadme;
   local.context.getNode = getNode;
+  local.context.list = list;
   setTimeout(() => {
     console.log("Type 'help()' for list of available commands");
   }, 1500);
@@ -41,6 +48,8 @@ const main = async () => {
     );
   });
 
+  keySpace = [...properties.keySpace];
+  firstNode = sortedNodes[0];
   createCLI();
 };
 
