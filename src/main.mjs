@@ -6,6 +6,7 @@ import {
   stopAndRemoveAllDHTDockerContainers,
 } from './dockerHelperFunctions.mjs';
 
+import { helpReadme } from './cliHelperFunctions.mjs';
 import { sendNodePostRequest } from './nodeHelperFunctions.mjs';
 
 const main = async () => {
@@ -15,8 +16,6 @@ const main = async () => {
   sortedNodes.forEach((node, i) => {
     const indexOne = (i + 1) % sortedNodes.length;
     const indexTwo = (i + 2) % sortedNodes.length;
-    console.log(indexOne, typeof indexOne);
-    console.log(indexTwo, typeof indexTwo);
     createDockerContainer(
       node,
       properties.shortcuts[node],
@@ -30,6 +29,10 @@ const main = async () => {
   const local = repl.start('node::local> ');
   local.context.setNode = sendNodePostRequest;
   local.context.stopDocker = stopAndRemoveAllDHTDockerContainers;
+  local.context.help = helpReadme;
+  setTimeout(() => {
+    console.log("Type 'help()' for list of available commands");
+  }, 1500);
 };
 
 try {
