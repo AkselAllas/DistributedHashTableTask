@@ -12,7 +12,10 @@ import { sendNodePostRequest } from './nodeHelperFunctions.mjs';
 const main = async () => {
   const properties = await readPropertiesFromFile(process.argv[2]);
   console.log(properties);
-  const sortedNodes = properties.nodes.sort((a, b) => a - b);
+  const validNodes = properties.nodes.filter(
+    (node) => node <= properties.keySpace[1] && node >= properties.keySpace[0]
+  );
+  const sortedNodes = validNodes.sort((a, b) => a - b);
   sortedNodes.forEach((node, i) => {
     const indexOne = (i + 1) % sortedNodes.length;
     const indexTwo = (i + 2) % sortedNodes.length;
