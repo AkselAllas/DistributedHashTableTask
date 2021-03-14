@@ -12,10 +12,8 @@ var p0 = process.argv[5].replace(/{|}/g, '').split(',');
 var p1 = p0[0].split(':');
 var p2 = p0[1].split(':');
 var successors = JSON.parse(`{"${p1[0]}":${p1[1]},"${p2[0]}":${p2[1]}}`);
-var validKeys = generateRange(
-  parseInt(node, 10),
-  parseInt(successors.successor, 10)
-);
+var predecessor = '';
+var validKeys = generateRange(parseInt(predecessor, 10), parseInt(node, 10));
 
 const setNodeValues = (inputString) => {
   inputString = inputString.replace(/"/g, '');
@@ -29,10 +27,8 @@ const setNodeValues = (inputString) => {
   p1 = p0[0].split(':');
   p2 = p0[1].split(':');
   successors = JSON.parse(`{"${p1[0]}":${p1[1]},"${p2[0]}":${p2[1]}}`);
-  validKeys = generateRange(
-    parseInt(node, 10),
-    parseInt(successors.successor, 10)
-  );
+  predecessor = splitters[4];
+  validKeys = generateRange(parseInt(predecessor, 10), parseInt(node, 10));
 };
 
 const hostname = getIPAddress();
@@ -47,7 +43,9 @@ const server = http.createServer((req, res) => {
         shortcuts
       )} keySpace: ${JSON.stringify(keySpace)} ${JSON.stringify(
         successors
-      )} validKeys: ${JSON.stringify(validKeys)}`
+      )} validKeys: ${JSON.stringify(validKeys)} predecessor: ${JSON.stringify(
+        predecessor
+      )}`
     );
   }
   if (req.method === 'POST') {
@@ -68,5 +66,5 @@ server.listen(port, hostname, () => {
 });
 
 setTimeout(() => {
-  sendNodePostRequest('12 [34] [1,100] {successor:21,nextSuccessor:43}');
+  sendNodePostRequest('17 [34] [1,100] {successor:21,nextSuccessor:43} 5');
 }, 5000);

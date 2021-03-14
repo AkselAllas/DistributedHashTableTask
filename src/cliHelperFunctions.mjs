@@ -3,7 +3,7 @@
 export const helpReadme = () => {
   console.log(
     '\x1b[32m',
-    'setNode("12 [34] [1,100] {successor:21,nextSuccessor:43}")'
+    'setNode("12 [34] [1,100] {successor:21,nextSuccessor:43} 5")'
   );
   console.log('\x1b[32m', 'stopDocker()');
   console.log('\x1b[32m', 'getNode(5)');
