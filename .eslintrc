@@ -10,6 +10,8 @@
     "func-names": "off",
     "object-shorthand": "off",
     "no-process-exit": "off",
+    "implicit-arrow-linebreak": "off",
+    "comma-dangle": "off",
     "no-param-reassign": "off",
     "no-return-await": "off",
     "no-underscore-dangle": "off",
