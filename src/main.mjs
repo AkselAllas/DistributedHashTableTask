@@ -8,7 +8,12 @@ import {
 } from './dockerHelperFunctions.mjs';
 
 import { helpReadme } from './cliHelperFunctions.mjs';
-import { list, getNode, sendNodePostRequest } from './nodeHelperFunctions.mjs';
+import {
+  lookup,
+  list,
+  getNode,
+  sendNodePostRequest,
+} from './nodeHelperFunctions.mjs';
 
 // eslint-disable-next-line no-var
 export var firstNode = [];
@@ -22,6 +27,7 @@ const createCLI = () => {
   local.context.help = helpReadme;
   local.context.getNode = getNode;
   local.context.list = list;
+  local.context.lookup = lookup;
   setTimeout(() => {
     console.log("Type 'help()' for list of available commands");
   }, 1500);
@@ -29,7 +35,6 @@ const createCLI = () => {
 
 const main = async () => {
   const properties = await readPropertiesFromFile(process.argv[2]);
-  console.log(properties);
   const validNodes = properties.nodes.filter(
     (node) => node <= properties.keySpace[1] && node >= properties.keySpace[0]
   );

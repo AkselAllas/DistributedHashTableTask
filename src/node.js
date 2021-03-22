@@ -1,8 +1,8 @@
 #!/usr/bin/env node
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-var */
 import http from 'http';
 import { getIPAddress, generateRange } from './helperFunctions.mjs';
-import { sendNodePostRequest } from './nodeHelperFunctions.mjs';
 
 //Initialize node status
 var node = process.argv[2];
@@ -17,18 +17,33 @@ var validKeys = generateRange(parseInt(predecessor, 10), parseInt(node, 10));
 
 const setNodeValues = (inputString) => {
   inputString = inputString.replace(/"/g, '');
-  console.log('MONKATOS:', inputString);
   const splitters = inputString.split(' ');
   node = splitters[0];
   shortcuts = JSON.parse(splitters[1]);
   keySpace = JSON.parse(splitters[2]);
-  console.log('SPLITTERS', splitters[3]);
   p0 = splitters[3].replace(/{|}/g, '').split(',');
   p1 = p0[0].split(':');
   p2 = p0[1].split(':');
   successors = JSON.parse(`{"${p1[0]}":${p1[1]},"${p2[0]}":${p2[1]}}`);
-  predecessor = splitters[4];
+  predecessor = splitters[5];
   validKeys = generateRange(parseInt(predecessor, 10), parseInt(node, 10));
+};
+
+const getValidKeys = (nodeObject) => {
+  const lowerBound = parseInt(nodeObject.node, 10) + 1;
+  const upperBound = parseInt(nodeObject.successor, 10) + 1;
+  if (lowerBound > upperBound) {
+    const firstArray = generateRange(lowerBound, keySpace[1] + 1);
+    const secondArray = generateRange(keySpace[0], upperBound);
+    const fullArray = firstArray.concat(secondArray);
+    return fullArray;
+  }
+  return generateRange(lowerBound, upperBound);
+};
+
+const setPredecessorFromObject = (nodeObject) => {
+  predecessor = nodeObject.node;
+  validKeys = getValidKeys(nodeObject);
 };
 
 const hostname = getIPAddress();
@@ -39,16 +54,13 @@ const server = http.createServer((req, res) => {
   res.setHeader('Content-Type', 'text/plain');
   if (req.url === '/' && req.method === 'GET') {
     res.end(
-      `node: ${JSON.stringify(node)} shorcuts: ${JSON.stringify(
-        shortcuts
-      )} keySpace: ${JSON.stringify(keySpace)} ${JSON.stringify(
-        successors
-      )} validKeys: ${JSON.stringify(validKeys)} predecessor: ${JSON.stringify(
-        predecessor
-      )}`
+      `${JSON.stringify(node)} ${JSON.stringify(shortcuts)} ${JSON.stringify(
+        keySpace
+      )} ${JSON.stringify(successors)} ${JSON.stringify(
+        validKeys
+      )} ${JSON.stringify(predecessor)} `
     );
-  }
-  if (req.method === 'POST') {
+  } else if (req.url === '/' && req.method === 'POST') {
     let body = '';
     req.on('data', (data) => {
       body += data;
@@ -58,13 +70,19 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end('200');
     });
+  } else if (req.url === '/predecessor' && req.method === 'POST') {
+    let body = '';
+    req.on('data', (data) => {
+      body += data;
+    });
+    req.on('end', () => {
+      setPredecessorFromObject(JSON.parse(body));
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end('200');
+    });
   }
 });
 
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
-
-setTimeout(() => {
-  sendNodePostRequest('17 [34] [1,100] {successor:21,nextSuccessor:43} 5');
-}, 5000);
