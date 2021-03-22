@@ -13,6 +13,7 @@ import {
   list,
   getNode,
   sendNodePostRequest,
+  travelCircleAndSetPredecessors,
 } from './nodeHelperFunctions.mjs';
 
 // eslint-disable-next-line no-var
@@ -28,6 +29,7 @@ const createCLI = () => {
   local.context.getNode = getNode;
   local.context.list = list;
   local.context.lookup = lookup;
+  local.context.travelCircleAndSetPredecessors = travelCircleAndSetPredecessors;
   setTimeout(() => {
     console.log("Type 'help()' for list of available commands");
   }, 1500);

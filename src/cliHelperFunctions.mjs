@@ -9,4 +9,5 @@ export const helpReadme = () => {
   console.log('\x1b[32m', 'getNode(5)');
   console.log('\x1b[32m', 'list()');
   console.log('\x1b[32m', 'lookup(69, 17)');
+  console.log('\x1b[32m', 'travelCircleAndSetPredecessors()');
 };

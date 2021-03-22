@@ -68,7 +68,9 @@ export const list = async () => {
   }
 };
 
-export const travelCircleAndSetPredecessors = async (startingNode) => {
+export const travelCircleAndSetPredecessors = async (
+  startingNode = firstNode
+) => {
   const firstNodeObject = await getNodeObject(startingNode);
   postNodePredecessor(firstNodeObject.successor, firstNodeObject);
   let nodeObjectToCompare = await getNodeObject(firstNodeObject.successor);
